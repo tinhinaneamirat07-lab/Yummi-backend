@@ -43,3 +43,17 @@ export const deleteRecipe = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+
+// GET /api/recipes/random
+export const getRandomRecipe = async (req, res) => {
+  try {
+    const count = await Recipe.countDocuments();
+    const random = Math.floor(Math.random() * count);
+    const recipe = await Recipe.findOne().skip(random);
+
+    res.status(200).json(recipe);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

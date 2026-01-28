@@ -4,7 +4,11 @@ import {
   getRecipes,
   updateRecipe,
   deleteRecipe, 
-} from "../controllers/recipe.controller.js";
+  getRandomRecipe,
+} from "../controllers/Recipe.controller.js";
+
+
+
 
 const router = express.Router();
 
@@ -12,5 +16,8 @@ router.post("/", createRecipe);
 router.get("/", getRecipes);
 router.put("/:id", updateRecipe);
 router.delete("/:id", deleteRecipe); 
+router.get("/random", getRandomRecipe);
+
+
 
 export default router;
