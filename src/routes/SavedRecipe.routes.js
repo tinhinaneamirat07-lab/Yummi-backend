@@ -1,23 +1,32 @@
 import express from "express";
 import {
-  addSavedRecipe,
+  saveRecipe,
   getSavedRecipes,
-  getSavedRecipesCount,
   deleteSavedRecipe,
+  countSavedRecipes,
 } from "../controllers/SavedRecipe.controller.js";
+import auth from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-// POST
-router.post("/", addSavedRecipe);
+/**
+ * GET all saved recipes of logged user
+ */
+router.get("/", auth, getSavedRecipes);
 
-// GET all
-router.get("/", getSavedRecipes);
+/**
+ * GET count of saved recipes
+ */
+router.get("/count", auth, countSavedRecipes);
 
-// GET count
-router.get("/count", getSavedRecipesCount);
+/**
+ * SAVE a recipe
+ */
+router.post("/", auth, saveRecipe);
 
-// DELETE
-router.delete("/:id", deleteSavedRecipe);
+/**
+ * DELETE saved recipe
+ */
+router.delete("/:id", auth, deleteSavedRecipe);
 
 export default router;
