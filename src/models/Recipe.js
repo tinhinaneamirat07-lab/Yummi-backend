@@ -3,14 +3,15 @@ import mongoose from "mongoose";
 const recipeSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
-    image: String,
-    category: String,
     description: String,
-    prep: String,
-    cook: String,
-    servings: Number,
+    image: { type: String, required: true },
     ingredients: [String],
     instructions: String,
+    category: {
+      type: String,
+      enum: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      required: true,
+    },
   },
   { timestamps: true }
 );

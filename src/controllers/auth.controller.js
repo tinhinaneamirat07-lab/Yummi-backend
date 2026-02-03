@@ -1,15 +1,19 @@
-import User from "../models/User.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import User from "../models/User.js";  
+import bcrypt from "bcryptjs";  
+import jwt from "jsonwebtoken";  
 
-/* ======================
-   REGISTER
-====================== */
+const createToken = (userId) => {
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
+};
+
+// ======================
+// REGISTER
+// ======================
 export const register = async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
+  const { name, email, password } = req.body;
 
-    // check if user exists
+  try {
+    // Check if the user exists
     const exists = await User.findOne({ email });
     if (exists) {
       return res.status(400).json({
@@ -17,25 +21,22 @@ export const register = async (req, res) => {
       });
     }
 
-    // hash password
+    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashed = await bcrypt.hash(password, salt);
 
-    // create user
-    const user = await User.create({
+    // Create user
+    const user = new User({
       name,
       email,
       password: hashed,
     });
+    await user.save();
 
-    // create token
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    // Generate token
+    const token = createToken(user._id);
 
-    res.status(201).json({
+    return res.status(201).json({
       token,
       user: {
         _id: user._id,
@@ -44,21 +45,21 @@ export const register = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({
+    return res.status(500).json({
       message: "Registration failed",
       error: err.message,
     });
   }
 };
 
-/* ======================
-   LOGIN
-====================== */
+// ======================
+// LOGIN
+// ======================
 export const login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    // check user
+  try {
+    // Check user
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
@@ -66,7 +67,7 @@ export const login = async (req, res) => {
       });
     }
 
-    // check password
+    // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({
@@ -74,14 +75,10 @@ export const login = async (req, res) => {
       });
     }
 
-    // token
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    // Generate token
+    const token = createToken(user._id);
 
-    res.json({
+    return res.json({
       token,
       user: {
         _id: user._id,
@@ -90,7 +87,7 @@ export const login = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({
+    return res.status(500).json({
       message: "Login failed",
       error: err.message,
     });

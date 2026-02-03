@@ -1,23 +1,16 @@
 import express from "express";
-import {
-  createRecipe,
-  getRecipes,
-  updateRecipe,
-  deleteRecipe, 
-  getRandomRecipe,
-} from "../controllers/Recipe.controller.js";
-
-
-
+import { getRecipes, addRecipe, deleteRecipe } from "../controllers/recipeController.js";
+import auth from "../middlewares/auth.js";
 
 const router = express.Router();
 
-router.post("/", createRecipe);
 router.get("/", getRecipes);
-router.put("/:id", updateRecipe);
-router.delete("/:id", deleteRecipe); 
-router.get("/random", getRandomRecipe);
-
-
+router.post("/", addRecipe);
+router.delete("/:id", auth, deleteRecipe);
 
 export default router;
+
+
+
+
+
