@@ -8,12 +8,12 @@ const savedRecipeSchema = new mongoose.Schema(
       required: true,
     },
     recipeId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Recipe",
+      type: String,
       required: true,
     },
     title: String,
     image: String,
+    mood: String,
   },
   { timestamps: true }
 );

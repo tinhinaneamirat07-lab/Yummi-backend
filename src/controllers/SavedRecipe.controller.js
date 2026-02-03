@@ -18,6 +18,7 @@ export const saveRecipe = async (req, res) => {
       recipeId: req.body.recipeId,
       title: req.body.title,
       image: req.body.image,
+      mood: req.body.mood,
     });
 
     await saved.save();
